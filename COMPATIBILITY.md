@@ -85,13 +85,19 @@ Diagnostics are prefixed `utree:` instead of `tree:`, and the `--help`/`--versio
 
 tree exits 2 when it encounters an unreadable directory — except in the code path used by `--prune`/`--matchdirs`/`--du`, which forgets to count those errors and exits 0. The same failure should produce the same exit code, so utree exits 2 in both cases. (Candidate for an upstream report.)
 
+## Fixed relative to v2.3.2
+
+utree does not reproduce these v2.3.2 bugs; each fix matches the change submitted upstream, and the reference pin carries it, so the differential tests verify the fixed behavior byte for byte.
+
+- [#47](https://github.com/Old-Man-Programmer/tree/pull/47) — -J grew an empty `"contents":[    ]` array on every entry after any read error.
+
 ## tree bugs utree reproduces
 
 The specification is tree v2.3.2's *actual* behavior, not its intended behavior: fixing any of these would be a silent divergence the differential tests could no longer verify. They are listed here, sorted by confidence, because they are surprising and mostly undocumented upstream.
 
 ### Clear bugs
 
-- -J's JSON is faithfully buggy: after any error, every later entry grows an empty `"contents":[    ]` array (tree's global error counter leaks into the output logic), and multiple roots lose their separating comma after an empty one — invalid JSON. (Candidate for an upstream report.)
+- -J loses the separating comma between multiple roots after an empty one — invalid JSON. (Candidate for an upstream report.)
 - -R sub-listings inherit the outer listing's indentation state, so deeper 00Tree.html files show continuation glyphs where branches belong (tree's global dirs[] array leaking); without -H they also list their own 00Tree.html. (Candidate for an upstream report.)
 - Glob syntax errors in `-P`/`-I` (e.g. a leading `|`) count as a match, mirroring patmatch's `-1` return being truthy in C. (Candidate for an upstream report.)
 
