@@ -75,15 +75,9 @@ The one silent exception is tree's STDDATA_FD handshake (Linux: JSON is emitted 
 
 ## Deliberate differences
 
-Two places where utree implements the behavior but chose to differ.
-
 ### Error messages and --help/--version name utree
 
 Diagnostics are prefixed `utree:` instead of `tree:`, and the `--help`/`--version` text is utree's own. Trailing-line output (the `N directories, M files` report) and in-tree annotations (`[error opening dir]`, `[N entries exceeds filelimit, not opening dir]`, `[recursive, not followed]`) are byte-identical to tree. The one place stdout keeps tree's name is `-H`: the HTML header and footer identify the generator as tree v2.3.2 verbatim, banner and all, because the HTML output is byte-compared against the reference.
-
-### Exit code is consistent under --prune/--matchdirs
-
-tree exits 2 when it encounters an unreadable directory — except in the code path used by `--prune`/`--matchdirs`/`--du`, which forgets to count those errors and exits 0. The same failure should produce the same exit code, so utree exits 2 in both cases. (Candidate for an upstream report.)
 
 ## Fixed relative to v2.3.2
 
@@ -93,17 +87,14 @@ utree does not reproduce these v2.3.2 bugs; each fix matches the change submitte
 - [#48](https://github.com/Old-Man-Programmer/tree/pull/48) — -J lost the separating comma after an empty root (invalid JSON).
 - [#49](https://github.com/Old-Man-Programmer/tree/pull/49) — -J left a trailing comma inside an unopenable root's contents array (invalid JSON).
 - [#50](https://github.com/Old-Man-Programmer/tree/pull/50) — a glob syntax error in `-P`/`-I` counted as a match, so a malformed pattern matched every file.
+- [#51](https://github.com/Old-Man-Programmer/tree/pull/51) — `--du`/`--prune`/`--matchdirs` exited 0 on unreadable directories that the plain walk reports with exit 2.
+- [#52](https://github.com/Old-Man-Programmer/tree/pull/52) — -R sub-listings inherited the outer walk's indentation state, drawing continuation lines where branches belong.
 
-## tree bugs utree reproduces
+## tree quirks utree reproduces
 
-The specification is tree v2.3.2's *actual* behavior, not its intended behavior: fixing any of these would be a silent divergence the differential tests could no longer verify. They are listed here, sorted by confidence, because they are surprising and mostly undocumented upstream.
-
-### Clear bugs
-
-- -R sub-listings inherit the outer listing's indentation state, so deeper 00Tree.html files show continuation glyphs where branches belong (tree's global dirs[] array leaking); without -H they also list their own 00Tree.html. (Candidate for an upstream report.)
-
-### Bug or intended? Unclear
+Surprising upstream behavior that may or may not be intended; utree reproduces it pending clarification.
 
 - An empty directory as the root reports `0 directories, 0 files`; a normal root counts itself (`1 directory, ...`).
+- -R sub-listings list their own 00Tree.html (the output file is created before the walk, like tree's setoutput()).
 - A plain-file argument prints `file  [error opening dir]` and counts as `1 file`, with exit status 0; a nonexistent path exits 2.
 - Which of several symlinks to one target gets tagged `[recursive, not followed]` depends on visit order, and tree's two walking modes differ: plain listings register in sorted order, `--prune`/`--matchdirs`/`--du` in `readdir()` order. utree mirrors both.

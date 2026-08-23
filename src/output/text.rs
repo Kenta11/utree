@@ -14,8 +14,6 @@ pub struct TextFormatter {
     colors: Colors,
     ids: meta::Ids,
     now: i64,
-    /// Outer dirs[] states leaking into a -R sub-listing.
-    ghost: Vec<bool>,
 }
 
 /// What decides an entry's color: mode, bare name (for suffix rules),
@@ -28,13 +26,12 @@ struct Paint<'a> {
 }
 
 impl TextFormatter {
-    pub fn new(opts: &Options, ghost: &[bool]) -> Self {
+    pub fn new(opts: &Options) -> Self {
         TextFormatter {
             glyphs: linedraw::select(opts),
             colors: Colors::parse(opts),
             ids: meta::Ids::default(),
             now: super::now_epoch(),
-            ghost: ghost.to_vec(),
         }
     }
 
@@ -94,17 +91,11 @@ impl TextFormatter {
                     out.write_all(if more { self.glyphs.vert } else { b"   " })?;
                     out.write_all(b" ")?;
                 }
-                // A ghost state one level deeper turns the branch
-                // glyph into a continuation (tree's dirs[] leak).
-                if self.ghost.len() > stack.len() + 1 {
-                    out.write_all(if last { b"   " } else { self.glyphs.vert })?;
+                out.write_all(if last {
+                    self.glyphs.corner
                 } else {
-                    out.write_all(if last {
-                        self.glyphs.corner
-                    } else {
-                        self.glyphs.tee
-                    })?;
-                }
+                    self.glyphs.tee
+                })?;
                 out.write_all(b" ")?;
             }
             self.emit_info(out, Some(&node.meta), opts)?;
