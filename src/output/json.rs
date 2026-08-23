@@ -257,8 +257,12 @@ impl Formatter for JsonFormatter {
                 )?;
             }
             RootKind::Opened(children) if children.is_empty() => {
-                // No comma even with more roots: mirrors the C flow.
-                write!(out, "}}{}", self.nl(opts))?;
+                write!(
+                    out,
+                    "}}{}{}",
+                    if more_roots { "," } else { "" },
+                    self.nl(opts)
+                )?;
             }
             RootKind::Opened(children) => {
                 out.write_all(b",\"contents\":[")?;

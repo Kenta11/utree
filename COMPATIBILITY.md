@@ -90,6 +90,7 @@ tree exits 2 when it encounters an unreadable directory — except in the code p
 utree does not reproduce these v2.3.2 bugs; each fix matches the change submitted upstream, and the reference pin carries it, so the differential tests verify the fixed behavior byte for byte.
 
 - [#47](https://github.com/Old-Man-Programmer/tree/pull/47) — -J grew an empty `"contents":[    ]` array on every entry after any read error.
+- [#48](https://github.com/Old-Man-Programmer/tree/pull/48) — -J lost the separating comma after an empty root (invalid JSON).
 
 ## tree bugs utree reproduces
 
@@ -97,7 +98,6 @@ The specification is tree v2.3.2's *actual* behavior, not its intended behavior:
 
 ### Clear bugs
 
-- -J loses the separating comma between multiple roots after an empty one — invalid JSON. (Candidate for an upstream report.)
 - -R sub-listings inherit the outer listing's indentation state, so deeper 00Tree.html files show continuation glyphs where branches belong (tree's global dirs[] array leaking); without -H they also list their own 00Tree.html. (Candidate for an upstream report.)
 - Glob syntax errors in `-P`/`-I` (e.g. a leading `|`) count as a match, mirroring patmatch's `-1` return being truthy in C. (Candidate for an upstream report.)
 
