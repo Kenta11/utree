@@ -10,13 +10,15 @@ if [[ $(id -u) -eq 0 ]]; then
 fi
 
 mkdir -p j1/sub j1/locked empty
-touch j1/afile j1/zfile j1/sub/x
+touch j1/afile j1/zfile j1/sub/x plain
 chmod 000 j1/locked
 
 ${tree} -J j1 > ${actual}/unreadable 2>&1
 echo $? > ${actual}/unreadable-exit
 ${tree} -J empty j1/sub > ${actual}/empty-first-root 2>&1
 ${tree} -J j1/sub empty > ${actual}/empty-last-root 2>&1
+${tree} -J plain j1/sub > ${actual}/file-root 2>&1
+${tree} -J --filelimit 1 j1 j1/sub > ${actual}/filelimit-root 2>&1
 
 chmod 755 j1/locked
 

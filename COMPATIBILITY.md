@@ -91,6 +91,7 @@ utree does not reproduce these v2.3.2 bugs; each fix matches the change submitte
 
 - [#47](https://github.com/Old-Man-Programmer/tree/pull/47) — -J grew an empty `"contents":[    ]` array on every entry after any read error.
 - [#48](https://github.com/Old-Man-Programmer/tree/pull/48) — -J lost the separating comma after an empty root (invalid JSON).
+- [#49](https://github.com/Old-Man-Programmer/tree/pull/49) — -J left a trailing comma inside an unopenable root's contents array (invalid JSON).
 
 ## tree bugs utree reproduces
 

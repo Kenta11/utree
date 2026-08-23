@@ -222,12 +222,7 @@ impl Formatter for JsonFormatter {
             RootKind::Missing | RootKind::Unreadable => {
                 out.write_all(b",\"contents\":[")?;
                 write!(out, "{{\"error\": \"error opening dir\"}}")?;
-                write!(
-                    out,
-                    "{}{}",
-                    if more_roots { "," } else { "" },
-                    self.nl(opts)
-                )?;
+                write!(out, "{}", self.nl(opts))?;
                 self.indent(out, 0, opts)?;
                 write!(
                     out,
@@ -242,12 +237,7 @@ impl Formatter for JsonFormatter {
                     out,
                     "{{\"error\": \"{entries} entries exceeds filelimit, not opening dir\"}}"
                 )?;
-                write!(
-                    out,
-                    "{}{}",
-                    if more_roots { "," } else { "" },
-                    self.nl(opts)
-                )?;
+                write!(out, "{}", self.nl(opts))?;
                 self.indent(out, 0, opts)?;
                 write!(
                     out,
