@@ -1,0 +1,102 @@
+# Compatibility with tree
+
+The reference implementation is **tree v2.3.2** (built from the [2.3.2 tag](https://github.com/Old-Man-Programmer/tree/tree/2.3.2)). For supported options, utree's stdout is byte-identical to tree's under `LC_ALL=C` — that is what `testsuite/` verifies. This file records every way the two binaries can behave differently — features utree has not implemented, its few deliberate differences — and, in the last section, the tree bugs utree reproduces on purpose.
+
+## Unimplemented
+
+tree leans on C library facilities that utree does not reimplement, and carries a few features utree has left out. Each entry names what is missing and the visible consequence. An entry stays here only for one of two reasons: implementing it faithfully is not possible within safe Rust and std, or its implementation cost is out of proportion to the rest of the port.
+
+### Locale collation: sorting is always byte order
+
+tree sorts names with `strcoll()`, so its output order depends on the current locale. utree always sorts by byte value, which equals tree's behavior under `LC_ALL=C`. The testsuite pins `LC_ALL=C` for both binaries.
+
+### nl_langinfo: charset locale detection reads the environment
+
+utree carries tree's full line-drawing table — all 16 charset families (Shift_JIS, EUC-JP, KOI8-R, ...) with their aliases, byte for byte. The divergence is only in the last step of the selection priority `--charset` → `TREE_CHARSET` → locale: tree asks `nl_langinfo(CODESET)`, which libc is free to derive from locale data, while utree looks for a UTF-8 marker in the `LC_ALL`/`LC_CTYPE`/`LANG` variables themselves. A locale whose codeset is not literally spelled in the variable (say `ja_JP` resolving to EUC-JP) therefore falls back to ASCII where tree would pick that charset's table. An explicit `--charset` or `TREE_CHARSET` always agrees with tree.
+
+### NSS: uid/gid names come from /etc/passwd and /etc/group
+
+tree resolves -u/-g names through getpwuid/getgrgid, which honors NSS (LDAP, sssd, ...). utree parses /etc/passwd and /etc/group directly and falls back to the numeric id, so names served only by NSS sources print numerically.
+
+### libc strftime: -D dates and --timefmt use chrono
+
+Local-time conversion and strftime come from the chrono crate rather than libc. Timezone rules are read from the same tzdata, but a --timefmt with conversion specifiers chrono does not know prints the format string verbatim instead of libc's implementation-defined output.
+
+### Unsupported options fail loudly
+
+tree options that utree recognizes but does not implement yet print an error to stderr and exit 1. utree never silently ignores an option or produces output that differs from what tree would print for the same invocation. They are:
+
+#### --fromfile, --fromtabfile
+
+- function: build the tree from a text listing (`find` output, or a tab-indented file) instead of walking the filesystem
+- why unimplemented: an entire second input mode that bypasses the walker — a parser, a tree builder and its own quirk set, roughly the size of the walking core
+
+#### --metafirst
+
+- function: print the metadata column before the indentation lines
+- why unimplemented: reorders the line layout in every output backend; cost spans the whole output path rather than one module
+
+#### --condense
+
+- function: collapse directory "singletons" — a directory whose only entry is another directory — onto one line, recursively
+- why unimplemented: forces every walk into full-tree mode and restructures emission and the directory counts; the cost cuts across the walker and every backend
+
+#### --compress
+
+- function: compress the indentation lines (levels 1 to 3, negative values also removing the per-level space)
+- why unimplemented: changes the indent geometry of the text backend and the indent-level arithmetic of the JSON and XML backends; a cross-backend layout change like --metafirst
+
+#### --hyperlink, --scheme, --authority
+
+- function: wrap names in OSC 8 terminal hyperlinks (`file://` URLs with configurable scheme and host)
+- why unimplemented: the default authority is the hostname, which std does not expose (a crate or unsafe libc call), plus realpath/URL-escape plumbing through every name-printing site
+
+#### --acl
+
+- function: mark files carrying POSIX ACLs with `+` in the permission column
+- why unimplemented: requires `listxattr`, which std does not expose; would cost unsafe code or an xattr dependency
+
+#### --selinux
+
+- function: print SELinux security contexts
+- why unimplemented: same xattr constraint
+
+#### --fflinks
+
+- function: process symlinked files' information
+- why unimplemented: barely documented even upstream; the intended semantics would have to be reverse-engineered from the C source before a faithful port is possible
+
+#### --opt-toggle
+
+- function: make a repeated option toggle off instead of staying set
+- why unimplemented: turns every flag assignment in the parser into a toggle; a parser-wide semantics rewrite
+
+The one silent exception is tree's STDDATA_FD handshake (Linux: JSON is emitted automatically when file descriptor 3 passes a stat test); utree does not detect it, so the listing simply stays in text form. Probing and adopting an arbitrary inherited descriptor has no safe-Rust route (`File::from_raw_fd` is unsafe), and erroring out would break the normal case, so this one stays silent.
+
+## Deliberate differences
+
+Two places where utree implements the behavior but chose to differ.
+
+### Error messages and --help/--version name utree
+
+Diagnostics are prefixed `utree:` instead of `tree:`, and the `--help`/`--version` text is utree's own. Trailing-line output (the `N directories, M files` report) and in-tree annotations (`[error opening dir]`, `[N entries exceeds filelimit, not opening dir]`, `[recursive, not followed]`) are byte-identical to tree. The one place stdout keeps tree's name is `-H`: the HTML header and footer identify the generator as tree v2.3.2 verbatim, banner and all, because the HTML output is byte-compared against the reference.
+
+### Exit code is consistent under --prune/--matchdirs
+
+tree exits 2 when it encounters an unreadable directory — except in the code path used by `--prune`/`--matchdirs`/`--du`, which forgets to count those errors and exits 0. The same failure should produce the same exit code, so utree exits 2 in both cases. (Candidate for an upstream report.)
+
+## tree bugs utree reproduces
+
+The specification is tree v2.3.2's *actual* behavior, not its intended behavior: fixing any of these would be a silent divergence the differential tests could no longer verify. They are listed here, sorted by confidence, because they are surprising and mostly undocumented upstream.
+
+### Clear bugs
+
+- -J's JSON is faithfully buggy: after any error, every later entry grows an empty `"contents":[    ]` array (tree's global error counter leaks into the output logic), and multiple roots lose their separating comma after an empty one — invalid JSON. (Candidate for an upstream report.)
+- -R sub-listings inherit the outer listing's indentation state, so deeper 00Tree.html files show continuation glyphs where branches belong (tree's global dirs[] array leaking); without -H they also list their own 00Tree.html. (Candidate for an upstream report.)
+- Glob syntax errors in `-P`/`-I` (e.g. a leading `|`) count as a match, mirroring patmatch's `-1` return being truthy in C. (Candidate for an upstream report.)
+
+### Bug or intended? Unclear
+
+- An empty directory as the root reports `0 directories, 0 files`; a normal root counts itself (`1 directory, ...`).
+- A plain-file argument prints `file  [error opening dir]` and counts as `1 file`, with exit status 0; a nonexistent path exits 2.
+- Which of several symlinks to one target gets tagged `[recursive, not followed]` depends on visit order, and tree's two walking modes differ: plain listings register in sorted order, `--prune`/`--matchdirs`/`--du` in `readdir()` order. utree mirrors both.

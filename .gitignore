@@ -1,0 +1,4 @@
+/target
+/testsuite/*/fixture/
+/testsuite/*/.ref/
+/testsuite/*/.actual/
