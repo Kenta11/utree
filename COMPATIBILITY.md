@@ -92,12 +92,12 @@ utree does not reproduce these v2.3.2 bugs; each fix matches the change submitte
 - [#41](https://github.com/Old-Man-Programmer/tree/pull/41) — an explicit --infofile anchored its patterns at the file's own path, so absolute-path patterns never matched (fix by Masatake YAMATO).
 - [gitlab !32](https://gitlab.com/OldManProgrammer/unix-tree/-/merge_requests/32) — full-tree walks (--du/--prune/--matchdirs) leaked each directory's .gitignore and .info files onto every directory visited after an early exit; utree's walker was never affected, and the reference now carries the fix.
 - [#53](https://github.com/Old-Man-Programmer/tree/pull/53) — --prune removed non-empty directories sitting at the -L cutoff, whose contents were never read.
+- [gitlab !33](https://gitlab.com/OldManProgrammer/unix-tree/-/merge_requests/33) — a root with no visible children was missing from the report totals, although the totals include the listed directory itself since 2.1.0.
 
 ## tree quirks utree reproduces
 
 Surprising upstream behavior that may or may not be intended; utree reproduces it pending clarification.
 
-- An empty directory as the root reports `0 directories, 0 files`; a normal root counts itself (`1 directory, ...`).
 - -R sub-listings list their own 00Tree.html (the output file is created before the walk, like tree's setoutput()).
 - A plain-file argument prints `file  [error opening dir]` and counts as `1 file`, with exit status 0; a nonexistent path exits 2.
 - Which of several symlinks to one target gets tagged `[recursive, not followed]` depends on visit order, and tree's two walking modes differ: plain listings register in sorted order, `--prune`/`--matchdirs`/`--du` in `readdir()` order. utree mirrors both.

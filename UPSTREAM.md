@@ -31,6 +31,7 @@ Every open pull request on [Old-Man-Programmer/tree](https://github.com/Old-Man-
 
 | MR | Subject | utree |
 |---|---|---|
+| [!33](https://gitlab.com/OldManProgrammer/unix-tree/-/merge_requests/33) | empty root missing from the report totals | fixed |
 | [!32](https://gitlab.com/OldManProgrammer/unix-tree/-/merge_requests/32) | full-tree ignore/info stack leak | fixed |
 | [!31](https://gitlab.com/OldManProgrammer/unix-tree/-/merge_requests/31) | README https links | n/a — docs |
 | [!30](https://gitlab.com/OldManProgrammer/unix-tree/-/merge_requests/30) | exit status documentation | n/a — docs/refactor; the behavior half is #51 |

@@ -90,13 +90,9 @@ impl Root {
                 ..Totals::default()
             },
             RootKind::Opened(children) => {
-                if children.is_empty() {
-                    Totals::default()
-                } else {
-                    let mut totals = count(children);
-                    totals.dirs += 1;
-                    totals
-                }
+                let mut totals = count(children);
+                totals.dirs += 1;
+                totals
             }
         };
         // tree: "if (flag.du) tot.size += info? info->size : 0;"
