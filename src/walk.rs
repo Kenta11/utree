@@ -537,9 +537,10 @@ impl<'a> Walker<'a> {
                 }
 
                 // tree.c: "prune empty folders, unless they match the
-                // requested pattern".
+                // requested pattern or sit at the -L cutoff".
                 if self.opts.prune
                     && node.children.is_none()
+                    && depth < self.level_limit()
                     && !(self.opts.matchdirs
                         && pattern_active
                         && !self.opts.patterns.is_empty()

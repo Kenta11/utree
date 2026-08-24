@@ -91,6 +91,7 @@ utree does not reproduce these v2.3.2 bugs; each fix matches the change submitte
 - [#52](https://github.com/Old-Man-Programmer/tree/pull/52) — -R sub-listings inherited the outer walk's indentation state, drawing continuation lines where branches belong.
 - [#41](https://github.com/Old-Man-Programmer/tree/pull/41) — an explicit --infofile anchored its patterns at the file's own path, so absolute-path patterns never matched (fix by Masatake YAMATO).
 - [gitlab #44](https://gitlab.com/OldManProgrammer/unix-tree/-/issues/44) — full-tree walks (--du/--prune/--matchdirs) leaked each directory's .gitignore and .info files onto every directory visited after an early exit; utree's walker was never affected, and the reference now carries the fix.
+- [#46](https://github.com/Old-Man-Programmer/tree/issues/46) — --prune removed non-empty directories sitting at the -L cutoff, whose contents were never read.
 
 ## tree quirks utree reproduces
 
