@@ -99,5 +99,4 @@ utree does not reproduce these v2.3.2 bugs; each fix matches the change submitte
 Surprising upstream behavior that may or may not be intended; utree reproduces it pending clarification.
 
 - -R sub-listings list their own 00Tree.html (the output file is created before the walk, like tree's setoutput()).
-- A plain-file argument prints `file  [error opening dir]` and counts as `1 file`, with exit status 0; a nonexistent path exits 2.
 - Which of several symlinks to one target gets tagged `[recursive, not followed]` depends on visit order, and tree's two walking modes differ: plain listings register in sorted order, `--prune`/`--matchdirs`/`--du` in `readdir()` order. utree mirrors both.
