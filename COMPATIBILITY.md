@@ -1,6 +1,6 @@
 # Compatibility with tree
 
-The reference implementation is **tree v2.3.2** (built from the [2.3.2 tag](https://github.com/Old-Man-Programmer/tree/tree/2.3.2)). For supported options, utree's stdout is byte-identical to tree's under `LC_ALL=C` — that is what `testsuite/` verifies. This file records every way the two binaries can behave differently — features utree has not implemented, its few deliberate differences — and, in the last section, the tree bugs utree reproduces on purpose.
+The reference implementation is the pinned commit of the [`ref-v2.3.2` branch of Uunixtree/reference-tree](https://github.com/Uunixtree/reference-tree/tree/ref-v2.3.2), which stacks **tree v2.3.2** plus the bug fixes we have submitted upstream; the pin moves back to the upstream repository once they are merged and released. For supported options, utree's stdout is byte-identical to the reference under `LC_ALL=C` — that is what `testsuite/` verifies. This file records every way utree and the *upstream* tree can behave differently.
 
 ## Unimplemented
 
