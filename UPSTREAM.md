@@ -17,7 +17,7 @@ Every open pull request on [Old-Man-Programmer/tree](https://github.com/Old-Man-
 | [#48](https://github.com/Old-Man-Programmer/tree/pull/48) | -J missing comma after empty root | fixed |
 | [#47](https://github.com/Old-Man-Programmer/tree/pull/47) | -J spurious "contents" after error | fixed |
 | [#42](https://github.com/Old-Man-Programmer/tree/pull/42) | test framework | n/a — utree has its own differential suite |
-| [#41](https://github.com/Old-Man-Programmer/tree/pull/41) | --infofile absolute-path patterns | mirrors — adoption candidate, fix verified to apply cleanly |
+| [#41](https://github.com/Old-Man-Programmer/tree/pull/41) | --infofile absolute-path patterns | fixed |
 | [#39](https://github.com/Old-Man-Programmer/tree/pull/39) | --stats flag | n/a — feature proposal |
 | [#37](https://github.com/Old-Man-Programmer/tree/pull/37) | remove C99 code | n/a — C cleanup |
 | [#36](https://github.com/Old-Man-Programmer/tree/pull/36) | const qualifier warning | n/a — C cleanup |

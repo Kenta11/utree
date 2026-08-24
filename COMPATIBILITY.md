@@ -89,6 +89,7 @@ utree does not reproduce these v2.3.2 bugs; each fix matches the change submitte
 - [#50](https://github.com/Old-Man-Programmer/tree/pull/50) — a glob syntax error in `-P`/`-I` counted as a match, so a malformed pattern matched every file.
 - [#51](https://github.com/Old-Man-Programmer/tree/pull/51) — `--du`/`--prune`/`--matchdirs` exited 0 on unreadable directories that the plain walk reports with exit 2.
 - [#52](https://github.com/Old-Man-Programmer/tree/pull/52) — -R sub-listings inherited the outer walk's indentation state, drawing continuation lines where branches belong.
+- [#41](https://github.com/Old-Man-Programmer/tree/pull/41) — an explicit --infofile anchored its patterns at the file's own path, so absolute-path patterns never matched (fix by Masatake YAMATO).
 
 ## tree quirks utree reproduces
 

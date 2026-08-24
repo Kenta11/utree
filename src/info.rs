@@ -75,11 +75,11 @@ impl InfoStack {
         self.stack.truncate(mark);
     }
 
-    /// --infofile: push an explicit info file.
+    /// --infofile: push an explicit info file, anchored at the root.
     pub fn push_file(&mut self, file: &Path) {
         if let Some(comments) = parse_info_file(file) {
             self.stack.push(InfoFile {
-                base: file.as_os_str().as_bytes().to_vec(),
+                base: Vec::new(),
                 comments,
             });
         }
