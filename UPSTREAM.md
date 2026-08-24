@@ -2,7 +2,7 @@
 
 Every open pull request on [Old-Man-Programmer/tree](https://github.com/Old-Man-Programmer/tree/pulls) and merge request on [OldManProgrammer/unix-tree](https://gitlab.com/OldManProgrammer/unix-tree/-/merge_requests), with utree's position on each. Rows disappear when the upstream request is merged or closed. Status values:
 
-- **fixed** — the fix is applied to utree and carried by the reference pin (see COMPATIBILITY.md, "Fixed relative to v2.3.2")
+- **fixed** — the fix is applied to utree and carried by the reference pin (the [ref-v2.3.2 commit log](https://github.com/Uunixtree/reference-tree/commits/ref-v2.3.2) is the list of carried fixes)
 - **mirrors** — utree currently reproduces the upstream behavior
 - **n/a** — does not concern utree (feature proposal, C-specific cleanup, build/infra, platforms, unimplemented options)
 

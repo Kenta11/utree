@@ -1,6 +1,6 @@
 # Compatibility with tree
 
-The reference implementation is the pinned commit of the [`ref-v2.3.2` branch of Uunixtree/reference-tree](https://github.com/Uunixtree/reference-tree/tree/ref-v2.3.2), which stacks **tree v2.3.2** plus the bug fixes we have submitted upstream; the pin moves back to the upstream repository once they are merged and released. For supported options, utree's stdout is byte-identical to the reference under `LC_ALL=C` — that is what `testsuite/` verifies. This file records every way utree and the *upstream* tree can behave differently.
+The reference implementation is the pinned commit of the [`ref-v2.3.2` branch of Uunixtree/reference-tree](https://github.com/Uunixtree/reference-tree/tree/ref-v2.3.2), which stacks **tree v2.3.2** plus the bug fixes we have submitted upstream — the branch's commit log, one commit per upstream request, is the list of those fixes; the pin moves back to the upstream repository once they are merged and released. For supported options, utree's stdout is byte-identical to the reference under `LC_ALL=C` — that is what `testsuite/` verifies. This file records every way utree and the *upstream* tree can behave differently.
 
 ## Unimplemented
 
@@ -79,20 +79,6 @@ The one silent exception is tree's STDDATA_FD handshake (Linux: JSON is emitted 
 
 Diagnostics are prefixed `utree:` instead of `tree:`, and the `--help`/`--version` text is utree's own. Trailing-line output (the `N directories, M files` report) and in-tree annotations (`[error opening dir]`, `[N entries exceeds filelimit, not opening dir]`, `[recursive, not followed]`) are byte-identical to tree. The one place stdout keeps tree's name is `-H`: the HTML header and footer identify the generator as tree v2.3.2 verbatim, banner and all, because the HTML output is byte-compared against the reference.
 
-## Fixed relative to v2.3.2
-
-utree does not reproduce these v2.3.2 bugs; each fix matches the change submitted upstream, and the reference pin carries it, so the differential tests verify the fixed behavior byte for byte.
-
-- [#47](https://github.com/Old-Man-Programmer/tree/pull/47) — -J grew an empty `"contents":[    ]` array on every entry after any read error.
-- [#48](https://github.com/Old-Man-Programmer/tree/pull/48) — -J lost the separating comma after an empty root (invalid JSON).
-- [#49](https://github.com/Old-Man-Programmer/tree/pull/49) — -J left a trailing comma inside an unopenable root's contents array (invalid JSON).
-- [#50](https://github.com/Old-Man-Programmer/tree/pull/50) — a glob syntax error in `-P`/`-I` counted as a match, so a malformed pattern matched every file.
-- [#51](https://github.com/Old-Man-Programmer/tree/pull/51) — `--du`/`--prune`/`--matchdirs` exited 0 on unreadable directories that the plain walk reports with exit 2.
-- [#52](https://github.com/Old-Man-Programmer/tree/pull/52) — -R sub-listings inherited the outer walk's indentation state, drawing continuation lines where branches belong.
-- [#41](https://github.com/Old-Man-Programmer/tree/pull/41) — an explicit --infofile anchored its patterns at the file's own path, so absolute-path patterns never matched (fix by Masatake YAMATO).
-- [gitlab !32](https://gitlab.com/OldManProgrammer/unix-tree/-/merge_requests/32) — full-tree walks (--du/--prune/--matchdirs) leaked each directory's .gitignore and .info files onto every directory visited after an early exit; utree's walker was never affected, and the reference now carries the fix.
-- [#53](https://github.com/Old-Man-Programmer/tree/pull/53) — --prune removed non-empty directories sitting at the -L cutoff, whose contents were never read.
-- [gitlab !33](https://gitlab.com/OldManProgrammer/unix-tree/-/merge_requests/33) — a root with no visible children was missing from the report totals, although the totals include the listed directory itself since 2.1.0.
 
 ## tree quirks utree reproduces
 
