@@ -10,6 +10,7 @@ Every open pull request on [Old-Man-Programmer/tree](https://github.com/Old-Man-
 
 | PR | Subject | utree |
 |---|---|---|
+| [#53](https://github.com/Old-Man-Programmer/tree/pull/53) | --prune hides directories at the -L cutoff | fixed |
 | [#52](https://github.com/Old-Man-Programmer/tree/pull/52) | -R sub-listing indent state | fixed |
 | [#51](https://github.com/Old-Man-Programmer/tree/pull/51) | full-tree walk exit status | fixed |
 | [#50](https://github.com/Old-Man-Programmer/tree/pull/50) | glob syntax error counts as match | fixed |
@@ -30,6 +31,7 @@ Every open pull request on [Old-Man-Programmer/tree](https://github.com/Old-Man-
 
 | MR | Subject | utree |
 |---|---|---|
+| [!32](https://gitlab.com/OldManProgrammer/unix-tree/-/merge_requests/32) | full-tree ignore/info stack leak | fixed |
 | [!31](https://gitlab.com/OldManProgrammer/unix-tree/-/merge_requests/31) | README https links | n/a — docs |
 | [!30](https://gitlab.com/OldManProgrammer/unix-tree/-/merge_requests/30) | exit status documentation | n/a — docs/refactor; the behavior half is #51 |
 | [!29](https://gitlab.com/OldManProgrammer/unix-tree/-/merge_requests/29) | macros to inline functions | n/a — C cleanup |
